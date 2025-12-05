@@ -1,0 +1,7 @@
+# Carpetas de Python
+__pycache__/
+.venv/
+venv/
+
+# Variables de entorno
+.env
