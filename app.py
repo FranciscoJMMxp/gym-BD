@@ -99,6 +99,38 @@ def add_cliente():
         if conn:
             conn.close()
 
+            # app.py (Agregar al final de las otras rutas)
+
+## Ruta para ELIMINAR un Cliente por ID (DELETE)
+@app.route('/clientes/<int:cliente_id>', methods=['DELETE'])
+def delete_cliente(cliente_id):
+    conn = None
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Usamos ON DELETE CASCADE, así que borrar de Persona es suficiente
+        delete_query = "DELETE FROM Persona WHERE id_persona = %s RETURNING id_persona;"
+        cur.execute(delete_query, (cliente_id,))
+        
+        # Verificar si se eliminó alguna fila
+        if cur.rowcount == 0:
+            conn.rollback()
+            return jsonify({"error": f"Cliente con ID {cliente_id} no encontrado."}, 404)
+
+        conn.commit()
+        cur.close()
+        return jsonify({"message": f"Cliente con ID {cliente_id} eliminado exitosamente"}), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback() 
+        print(f"Error al eliminar cliente: {e}")
+        return jsonify({"error": "Error interno del servidor al eliminar cliente"}, 500)
+    finally:
+        if conn:
+            conn.close()
+
 # --- Inicio del Servidor ---
 if __name__ == '__main__':
     # Render usa la variable de entorno 'PORT'
