@@ -3,12 +3,15 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 # Cargar variables de entorno (solo para desarrollo local)
 # Render usará las variables que configures directamente en su plataforma.
 load_dotenv() 
 
 app = Flask(__name__)
+
+CORS(app)
 
 # --- Función de Conexión a la Base de Datos ---
 def get_db_connection():
