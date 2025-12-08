@@ -101,9 +101,9 @@ def login():
         if user_record and check_password_hash(user_record[1], password):
             persona_id, _, rol = user_record
             
-            # Crear el token JWT, incluyendo el rol en los claims (datos extra del token)
+            # --- CORRECCIÓN CLAVE: El identity debe ser un string para evitar errores 422 ---
             access_token = create_access_token(
-                identity=persona_id, 
+                identity=str(persona_id), # <--- ¡Aquí está la solución!
                 additional_claims={'rol': rol, 'persona_id': persona_id}
             )
             return jsonify(access_token=access_token, rol=rol)
