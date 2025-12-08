@@ -121,10 +121,14 @@ def login():
 
 ## Ruta para OBTENER todos los Clientes (Requiere Login)
 @app.route('/clientes', methods=['GET'])
-@jwt_required() # <--- Pone el requisito de tener un Token JWT
+@jwt_required()
 def get_clientes():
+    # El identity que obtienes ahora es un string, pero no lo usamos aquí,
+    # solo usamos los claims:
     current_user_claims = get_jwt()
     rol = current_user_claims['rol']
+    
+    # ... (el resto del código sigue igual) ...
     
     # 1. Autorización: Si solo queremos que empleados y administradores vean la lista completa
     if rol not in ['empleado', 'administrador']:
